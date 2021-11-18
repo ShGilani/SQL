@@ -1,0 +1,15 @@
+Find the number of the orders above €1 000  (Significant Orders) using only the COUNT() function?
+
+SELECT COUNT(CASE WHEN order_price > 1000 THEN 1 END)
+AS significant_orders
+FROM orders;
+
+Instead of putting conditions at the end of the query and filtering after the COUNT() function does its job, we can use the CASE statement. 
+
+The COUNT() statement above reads as follows:
+
+Find all the values in the column order_price above 1000.
+Assign the value 1 (you can assign any value you want) to these values.
+Assign NULL to rows with prices below 1000.
+Count the number of assigned 1s.
+Show the result in the column significant_orders.
