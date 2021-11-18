@@ -1,0 +1,8 @@
+
+COUNT(*) is same as COUNT(1)
+SELECT COUNT(1) AS number_of_customers FROM orders; (Includes all the records in the result set including null)
+
+
+SELECT COUNT(customer_id) AS number_of_customers FROM orders; (doesn't count records with NULL customer_id)
+
+SELECT COUNT(DISTINCT customer_id) AS number_of_customers FROM orders;
