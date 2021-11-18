@@ -6,3 +6,125 @@ SELECT COUNT(1) AS number_of_customers FROM orders; (Includes all the records in
 SELECT COUNT(customer_id) AS number_of_customers FROM orders; (doesn't count records with NULL customer_id)
 
 SELECT COUNT(DISTINCT customer_id) AS number_of_customers FROM orders;
+
+
+SELECT COUNT( CASE WHEN order_price > 1000 THEN 1 END) AS no_of_significant_orders FROM orders; 
+
+
+------------
+
+aggregate functions (MIN, MAX, SUM, AVG, and others)
+
+SELECT Gender, AVG(Height)
+FROM People
+GROUP BY Gender
+
+SELECT Gender, Eye_color, COUNT(*)
+FROM People
+GROUP BY Gender, Eye_color
+
+
+SELECT City.Name, COUNT(*)
+FROM Person
+JOIN City ON (Person.CityID = City.ID)
+GROUP BY City.ID, City.Name
+
+-------
+Remember that in the database, an SQL SELECT statement always executes in this order:
+
+FROM
+WHERE
+GROUP BY
+HAVING
+SELECT
+ORDER BY
+
+We take a data source, filter the records, group them, filter the groups, select the columns we want and then sort them.
+---------
+************ Every arithmetic operation that includes an operand with a NULL value returns a NULL result.
+
+select * from employees where salary+bonus > 1800;
+------
+
+UNION ALL is faster than UNION, but UNION removes duplicate rows. 
+
+----------
+
+CREATE TABLE florist
+AS SELECT
+  *
+FROM product
+WHERE category = ’flower’;
+
+--------
+
+Incorrect:
+SELECT office_code
+FROM office_revenue
+WHERE revenue > AVG(revenue);
+
+Correct:
+SELECT office_code, revenue
+FROM office_revenue
+WHERE revenue > (SELECT AVG(revenue)
+             FROM office_revenue);
+             
+             
+------------------------
+
+HAVING can be used without an accompanying GROUP BY
+
+SELECT round(avg(salary))
+FROM hr.emp_details_view
+HAVING avg(salary) < 11000;
+
+-------------
+
+RANK(). can take a column as an argument. 
+The rank order is determined over the value of this column. 
+If two or more rows have the same value in this column, these rows all get the same rank. 
+if two rows share a rank of 10, the next rank will be 12.
+
+DENSE_RANK(): Same as RANK(). However, if two rows share a rank of 10, the next rank will be 12.
+
+---
+
+Difference: Using a GROUP BY clause collapses original rows; for that reason, you cannot access the original values later in the query. 
+On the other hand, using a PARTITION BY clause keeps original values while also allowing us to produce aggregated values.
+
+SELECT
+    train.id,
+    train.model,
+    route.name,
+    route.from_city,
+    route.to_city,
+    COUNT(*) OVER (PARTITION BY train.id ORDER BY train.id) AS routes,
+    COUNT(*) OVER () AS routes_total
+FROM train
+INNER JOIN journey ON journey.train_id = train.id
+INNER JOIN route ON journey.route_id = route.id;
+
+-----
+
+Window functions are similar to AGGREGATE FUNCTIONS, but there is one important difference. 
+When we use aggregate functions with the GROUP BY clause, we “lose” the individual rows. 
+We can’t mix attributes from an individual row with the results of an aggregate function; the function is performed on the rows as an entire group. 
+This is not the case when we use SQL window functions: 
+we can generate a result set with some attributes of an individual row together with the results of the window function.
+
+Window functions can be called in the SELECT statement or in the ORDER BY clause. However, they can never be called in the WHERE clause. 
+
+RANK, which is one of the simplest SQL window functions
+
+SELECT	
+		RANK() OVER (PARTITION BY department ORDER BY salary DESC) 
+			AS dept_ranking,
+		department,
+		employee_id, 
+		full_name, 
+		salary
+FROM employee;
+
+
+ 
+ 
